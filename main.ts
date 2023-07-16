@@ -1,26 +1,25 @@
-import { Plugin } from "obsidian";
+import {Plugin} from 'obsidian'
 
-export default class ExamplePlugin extends Plugin {
-	statusBarElement: HTMLSpanElement;
+export default class ExamplePlugin extends Plugin{
+
+	statusBarTextElement:HTMLSpanElement;
 
 	onload() {
-		this.statusBarElement = this.addStatusBarItem().createEl("span");
-
+		this.statusBarTextElement = this.addStatusBarItem().createEl('span')
+		
 		this.readActiveFileAndUpdateLineCount();
 
-		this.app.workspace.on("editor-change", (editor) => {
-			const content = editor.getDoc().getValue();
-			this.updateLineCount(content);
-		});
-
-		this.app.workspace.on("active-leaf-change", () => {
+		this.app.workspace.on('active-leaf-change',async () =>{
 			this.readActiveFileAndUpdateLineCount();
-		});
-	}
+		})
 
-	onunload() {
-		this.statusBarElement.remove();
+		this.app.workspace.on('editor-change',editor =>{
+			const content = editor.getDoc().getValue()
+			this.updateLineCount(content)
+		})
+
 	}
+	
 
 	private async readActiveFileAndUpdateLineCount() {
 		const file = this.app.workspace.getActiveFile();
@@ -32,9 +31,11 @@ export default class ExamplePlugin extends Plugin {
 		}
 	}
 
-	private updateLineCount(fileContent?: string) {
+	private updateLineCount(fileContent?:String){
 		const count = fileContent ? fileContent.split(/\r\n|\r|\n/).length : 0;
-		const linesWord = count === 1 ? "line" : "lines";
-		this.statusBarElement.textContent = `${count} ${linesWord}`;
+		const linesWord = count == 1 ? "line" : "lines";
+		this.statusBarTextElement.textContent = `${count} ${linesWord}`
 	}
+
+
 }
